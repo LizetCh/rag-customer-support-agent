@@ -1,4 +1,6 @@
-# Bakery Support Agent
+# RAG Customer Support Agent
+
+GitHub repo name: `rag-customer-support-agent` (chosen to be scannable by a hiring manager -- leads with the actual skills demonstrated, RAG + agent + customer support, rather than the bakery flavor text). The local folder on this machine may still be named `bread-agent` for historical reasons; that's cosmetic only and doesn't need to match.
 
 ## 1. What this is
 

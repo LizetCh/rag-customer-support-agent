@@ -1,6 +1,6 @@
-# Bakery Support Agent
+# RAG Customer Support Agent
 
-A customer-support agent for a fictitious small bakery. It answers customer questions from the bakery's own documents (FAQ, hours, shipping, returns, allergens), checks live inventory, and hands off to a human when it can't resolve something -- built as a portfolio project demonstrating RAG, a tool-using agent, evaluation, and a real deploy.
+A RAG-powered, tool-using customer-support agent, demonstrated on a fictitious small bakery. It answers customer questions from the bakery's own documents (FAQ, hours, shipping, returns, allergens), checks live inventory, and hands off to a human when it can't resolve something -- built as a portfolio project demonstrating retrieval-augmented generation, an agent that calls tools (LangGraph), evaluation of both retrieval and tool choice, cost/latency observability, and a real deploy.
 
 **Status:** environment setup. No live API yet -- see [PROGRESS.md](PROGRESS.md) for exactly where the project stands, and [CLAUDE.md](CLAUDE.md) for the full brief and roadmap.
 
