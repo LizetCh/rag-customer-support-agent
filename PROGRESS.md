@@ -7,7 +7,7 @@ Read this file first, every session, on either laptop. It is more precise than C
 - **Active Historia:** Setup (pre-Historia 1)
 - **Next concrete step:** Verify the scaffold (pytest + uvicorn smoke test), commit, then start Historia 1 / Task 1 -- write the bakery's docs/*.md files (FAQ, hours, shipping, returns, allergens) together.
 - **Blocked on:** nothing yet. Still need to create a Gemini API key (Google AI Studio) and a Supabase project before Historia 1's ingestion script can run -- guided walkthrough pending.
-- **GitHub remote:** not connected yet. User will create the repo on GitHub and share the URL.
+- **GitHub remote:** connected and pushed -- https://github.com/LizetCh/rag-customer-support-agent
 - **Last session:** 2026-10-26
 
 ## Session log (most recent first)
@@ -17,4 +17,5 @@ Read this file first, every session, on either laptop. It is more precise than C
 - Scaffolded the repo: app/ package (main.py with /health, config.py, empty db/rag/agent/api/telemetry subpackages), tests/test_health.py, docs/ scripts/ evals/ supabase/ folders, .env.example, .gitignore, README.md, GLOSSARY.md, supabase/schema.sql.
 - Decisions made: uv-managed Python 3.12 venv (not 3.14, for broader wheel compatibility with langgraph/langchain-google-genai/supabase); gemini-2.5-flash as the default chat model and gemini-embedding-001 at 768 dims as the default embedding model, chosen for low cost since Historia 3 tracks cost per request; everything in English including the fictitious bakery content.
 - Project renamed from "bread-agent" to **rag-customer-support-agent** (pyproject.toml, README.md, CLAUDE.md title) so the GitHub repo name itself communicates the skills demonstrated to a hiring manager scanning repo names. Local folder on this machine stays `bread-agent` (Windows locked a rename -- a leftover uvicorn/python process was holding the directory; killed those, but the directory itself still reported busy, so left it as-is since it's cosmetic only and not worth forcing).
-- Not done yet: no real Gemini/Supabase credentials, no GitHub remote (create it on GitHub as `rag-customer-support-agent`), no bakery content, no RAG/agent code.
+- Connected the GitHub remote (https://github.com/LizetCh/rag-customer-support-agent) and pushed both the scaffold commit and the rename commit.
+- Not done yet: no real Gemini/Supabase credentials, no bakery content, no RAG/agent code.
