@@ -25,3 +25,15 @@ Plain-language definitions of terms as they come up while building this project.
 **Schema cache** -- a list PostgREST keeps in memory of which tables, columns, and functions exist in the database, so it knows which endpoints to serve. The `PGRST002` error means PostgREST could not build that list. The tables existed, but the layer that serves them over HTTP was not working.
 
 **RLS (Row Level Security)** -- a Postgres feature that decides, row by row, who may read or write a table. Turned on with no rules ("policies"), it blocks everyone except roles that bypass it. In Supabase, the public `anon` key (safe to ship in a browser) is then locked out, while our server's `service_role` key still has full access.
+
+**Chunking** -- splitting documents into smaller pieces ("chunks") before embedding them, so search can return the one paragraph that answers a question instead of a whole document. We split at each `## ` Markdown heading (structure-aware chunking) and start every chunk with "<doc title> > <section heading>", so a short chunk like "flat rate of $12" still says what it is about. Common alternatives: fixed-size chunks with overlap, recursive splitting, and semantic chunking.
+
+**Ingestion** -- the offline step that prepares the knowledge base: read the docs, chunk them, embed each chunk, and store chunk text + vector + source document in the database. It runs once, and again whenever the docs change, not on every chat request.
+
+**Idempotent** -- an operation you can run many times with the same result as running it once. Our ingestion script deletes a document's old chunks before inserting the new ones, so re-running it never creates duplicates.
+
+**Task type (embeddings)** -- a hint passed to the Gemini embedding model about how the text will be used. Documents are embedded as `RETRIEVAL_DOCUMENT` and questions as `RETRIEVAL_QUERY`, which places a question close to the passages that answer it, not just close to similarly worded text.
+
+**Embedding space** -- the "map" an embedding model places texts on. Each model has its own map, so vectors from different models (or the same model with different settings, such as dimensions) cannot be compared. Documents and questions must be embedded with the same model; switching models means re-embedding every chunk. The embedding model is independent of the chat LLM, which only ever sees the retrieved chunk text.
+
+**MTEB (Massive Text Embedding Benchmark)** -- a public leaderboard that scores embedding models on tasks like retrieval, classification, and clustering. A common starting point for choosing an embedding model, before testing the top candidates on your own eval set.

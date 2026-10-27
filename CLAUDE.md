@@ -79,7 +79,7 @@ Check an item only after the user has confirmed, by actually running it, that it
 
 **Historia 1 -- Knowledge base & RAG (~4h)**
 - [x] Write 5-8 short bakery documents: FAQ, hours, shipping, returns, allergens. DoD: .md files committed under docs/.
-- [ ] Ingestion script: chunk the docs, embed each chunk with Gemini, store in Supabase/pgvector. DoD: chunks exist in Supabase with their embedding and source-document metadata.
+- [x] Ingestion script: chunk the docs, embed each chunk with Gemini, store in Supabase/pgvector. DoD: chunks exist in Supabase with their embedding and source-document metadata.
 - [ ] Top-k search function. DoD: given a question, returns the 3 most relevant chunks with their source document.
 
 **Historia 2 -- Agent with tools (~4h)**
