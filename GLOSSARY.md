@@ -19,3 +19,9 @@ Plain-language definitions of terms as they come up while building this project.
 **Latency** -- how long a request takes end to end, typically measured in milliseconds. Important to log per request so we can reason about and report real performance, not guesses.
 
 **recall@k** -- a retrieval metric: out of all the questions in an eval set, what fraction had their correct source document show up somewhere in the top k search results. We use recall@3 since the agent's search_knowledge tool returns the top 3 chunks.
+
+**Data API (PostgREST)** -- the layer Supabase puts in front of Postgres that turns each table into an HTTP endpoint (e.g. `GET /rest/v1/products`). Our code talks to the database through it, via supabase-py, instead of opening a direct Postgres connection. It can be switched off in Project Settings -> Data API; if it is off, no request reaches the tables.
+
+**Schema cache** -- a list PostgREST keeps in memory of which tables, columns, and functions exist in the database, so it knows which endpoints to serve. The `PGRST002` error means PostgREST could not build that list. The tables existed, but the layer that serves them over HTTP was not working.
+
+**RLS (Row Level Security)** -- a Postgres feature that decides, row by row, who may read or write a table. Turned on with no rules ("policies"), it blocks everyone except roles that bypass it. In Supabase, the public `anon` key (safe to ship in a browser) is then locked out, while our server's `service_role` key still has full access.

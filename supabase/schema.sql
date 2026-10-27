@@ -63,3 +63,9 @@ create table if not exists chat_logs (
   escalated boolean not null default false,
   created_at timestamptz not null default now()
 );
+
+-- Row Level Security: with no policies defined, the public `anon` key gets no
+-- access to these tables. The server uses the service_role key, which bypasses RLS.
+alter table document_chunks enable row level security;
+alter table products        enable row level security;
+alter table chat_logs       enable row level security;

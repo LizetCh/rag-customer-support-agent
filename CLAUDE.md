@@ -78,7 +78,7 @@ Check an item only after the user has confirmed, by actually running it, that it
 - [x] **Setup**: CLAUDE.md, repo scaffold, uv-managed Python 3.12 env, /health endpoint, GitHub remote connected. DoD: `uv run pytest` passes, `uv run uvicorn app.main:app --reload` boots, repo pushed to GitHub.
 
 **Historia 1 -- Knowledge base & RAG (~4h)**
-- [ ] Write 5-8 short bakery documents: FAQ, hours, shipping, returns, allergens. DoD: .md files committed under docs/.
+- [x] Write 5-8 short bakery documents: FAQ, hours, shipping, returns, allergens. DoD: .md files committed under docs/.
 - [ ] Ingestion script: chunk the docs, embed each chunk with Gemini, store in Supabase/pgvector. DoD: chunks exist in Supabase with their embedding and source-document metadata.
 - [ ] Top-k search function. DoD: given a question, returns the 3 most relevant chunks with their source document.
 
