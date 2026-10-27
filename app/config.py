@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     app_env: str = "development"
 
     google_api_key: str = ""
-    gemini_chat_model: str = "gemini-2.5-flash"
+    gemini_chat_model: str = "gemini-3.5-flash"
     gemini_embedding_model: str = "gemini-embedding-001"
     gemini_embedding_dim: int = 768
 

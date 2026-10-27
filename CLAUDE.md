@@ -14,7 +14,7 @@ A customer-support agent for a fictitious small bakery. It answers customer ques
 |---|---|
 | API | FastAPI |
 | Agent orchestration | LangGraph |
-| LLM (chat + tool calling) | Gemini, `gemini-2.5-flash` |
+| LLM (chat + tool calling) | Gemini, `gemini-3.5-flash` |
 | Embeddings | Gemini, `gemini-embedding-001`, truncated to 768 dims |
 | Vector store + relational data | Supabase (Postgres) with the `pgvector` extension |
 | Containerization | Docker |
@@ -83,7 +83,7 @@ Check an item only after the user has confirmed, by actually running it, that it
 - [x] Top-k search function. DoD: given a question, returns the 3 most relevant chunks with their source document.
 
 **Historia 2 -- Agent with tools (~4h)**
-- [ ] LangGraph graph with three tools: search_knowledge, check_stock, handoff_to_human. DoD: on 3 test questions (one per tool), the agent picks the right tool each time.
+- [x] LangGraph graph with three tools: search_knowledge, check_stock, handoff_to_human. DoD: on 3 test questions (one per tool), the agent picks the right tool each time.
 - [ ] POST /chat endpoint with Pydantic schemas and a session id. DoD: works end-to-end from the Swagger UI.
 
 **Historia 3 -- Evaluation & cost (~2.5h)**
@@ -92,6 +92,9 @@ Check an item only after the user has confirmed, by actually running it, that it
 
 **Historia 4 -- Deploy (~1.5h)**
 - [ ] Dockerfile, deploy on Render, README with a flow diagram and real eval numbers. DoD: public URL, README shows real metrics (not placeholders).
+
+**Historia 5 -- "What the RAG?" visualizer (optional, only after Historia 4 is deployed)**
+- [ ] A page that shows, for one question: a 2D projection (PCA or UMAP) of all chunk embeddings colored by source document, the question's point with lines to its top-3 chunks (hover shows chunk text and similarity), the agent's path through the graph node by node (via `graph.stream`), and the turn's tokens, cost, and latency. Must state that the 2D map distorts distances and the real ranking is cosine similarity in 768 dims. DoD: works on the public deploy for any question.
 
 ## 6. Working agreement (how Claude should operate in this repo)
 
@@ -113,7 +116,7 @@ Defined in .env.example, copied locally to .env (gitignored, never shown to or r
 | Var | Purpose |
 |---|---|
 | GOOGLE_API_KEY | Gemini API key (Google AI Studio) -- chat + embeddings |
-| GEMINI_CHAT_MODEL | defaults to gemini-2.5-flash |
+| GEMINI_CHAT_MODEL | defaults to gemini-3.5-flash |
 | GEMINI_EMBEDDING_MODEL | defaults to gemini-embedding-001 |
 | GEMINI_EMBEDDING_DIM | defaults to 768 |
 | SUPABASE_URL | Supabase project URL |

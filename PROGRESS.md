@@ -4,8 +4,9 @@ Read this file first, every session, on either laptop. It is more precise than C
 
 ## Current status
 
-- **Active Historia:** Historia 2 -- Agent with tools (Historia 1 is fully done and checked off).
-- **Next concrete step:** Start Historia 2 / Task 1 by explaining agents, tool calling, and a LangGraph state graph in plain language, *then* build the graph with three tools: `search_knowledge` (wraps `app/rag/search.py`), `check_stock` (needs the `products` table seeded first -- no seed script exists yet), and `handoff_to_human`. DoD: on 3 test questions, one per tool, the agent picks the right tool each time.
+- **Active Historia:** Historia 2 -- Agent with tools. Task 1 (LangGraph graph with three tools) is done and checked off.
+- **Next concrete step:** Historia 2 / Task 2: POST /chat endpoint with Pydantic request/response schemas and a session id, wrapping `build_graph()` from `app/agent/graph.py`. Explain the concepts first. DoD: works end-to-end from the Swagger UI.
+- **Ideas parked for Historia 3 evals:** (1) compare recall@3 for dense-only vs hybrid search (pgvector + Postgres full-text, fused with RRF); (2) compare structure-aware vs fixed-size chunking; (3) include ambiguous tool-choice cases such as "My order arrived crushed" with no request for a person (`search_knowledge` vs `handoff_to_human`); (4) log tool arguments, e.g. to confirm what Gemini passes to `check_stock` for "croissants".
 - **Blocked on:** nothing.
 - **Setup notes:** `.env` must exist on each laptop (gitignored; copy from `.env.example` and fill it in). Supabase's Data API must be enabled (Project Settings -> Data API) -- it had been switched off, which caused the earlier `503 PGRST002`. `scripts/verify_setup.py` checks Supabase and Gemini.
 - **GitHub remote:** connected -- https://github.com/LizetCh/rag-customer-support-agent

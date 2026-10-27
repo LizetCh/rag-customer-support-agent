@@ -24,7 +24,7 @@ Client -> POST /chat (FastAPI) -> LangGraph agent (Gemini)
 
 ## Tech stack
 
-FastAPI - LangGraph - Gemini (`gemini-2.5-flash` chat, `gemini-embedding-001` embeddings) - Supabase/pgvector - Docker - Render.
+FastAPI - LangGraph - Gemini (`gemini-3.5-flash` chat, `gemini-embedding-001` embeddings) - Supabase/pgvector - Docker - Render.
 
 ## Getting started
 
