@@ -37,3 +37,9 @@ Plain-language definitions of terms as they come up while building this project.
 **Embedding space** -- the "map" an embedding model places texts on. Each model has its own map, so vectors from different models (or the same model with different settings, such as dimensions) cannot be compared. Documents and questions must be embedded with the same model; switching models means re-embedding every chunk. The embedding model is independent of the chat LLM, which only ever sees the retrieved chunk text.
 
 **MTEB (Massive Text Embedding Benchmark)** -- a public leaderboard that scores embedding models on tasks like retrieval, classification, and clustering. A common starting point for choosing an embedding model, before testing the top candidates on your own eval set.
+
+**Cosine similarity** -- the score `match_documents` uses to rank chunks: how closely two vectors point in the same direction, where higher means closer in meaning. It is relative, not absolute. In our data a good match scores around 0.68 and an irrelevant one around 0.60, so there is no obvious universal "relevant" cutoff.
+
+**Top-k search** -- return the k chunks with the highest similarity to the question (we use k = 3). It always returns k results, even when none of them answers the question.
+
+**Hallucination** -- when an LLM states something confidently that is not supported by its context or by fact. In RAG, a common cause is handing the model irrelevant chunks that it then tries to turn into an answer. Mitigated by a prompt that requires answering only from context, and optionally a similarity threshold.

@@ -80,7 +80,7 @@ Check an item only after the user has confirmed, by actually running it, that it
 **Historia 1 -- Knowledge base & RAG (~4h)**
 - [x] Write 5-8 short bakery documents: FAQ, hours, shipping, returns, allergens. DoD: .md files committed under docs/.
 - [x] Ingestion script: chunk the docs, embed each chunk with Gemini, store in Supabase/pgvector. DoD: chunks exist in Supabase with their embedding and source-document metadata.
-- [ ] Top-k search function. DoD: given a question, returns the 3 most relevant chunks with their source document.
+- [x] Top-k search function. DoD: given a question, returns the 3 most relevant chunks with their source document.
 
 **Historia 2 -- Agent with tools (~4h)**
 - [ ] LangGraph graph with three tools: search_knowledge, check_stock, handoff_to_human. DoD: on 3 test questions (one per tool), the agent picks the right tool each time.
