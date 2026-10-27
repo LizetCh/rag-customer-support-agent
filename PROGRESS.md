@@ -4,14 +4,24 @@ Read this file first, every session, on either laptop. It is more precise than C
 
 ## Current status
 
-- **Active Historia:** Setup (pre-Historia 1)
-- **Next concrete step:** First re-run `PYTHONPATH=. uv run python scripts/verify_setup.py` to check whether Supabase's API has recovered. If it passes, move straight to Historia 1 / Task 1 -- write the bakery's docs/*.md files (FAQ, hours, shipping, returns, allergens) together. If it's still failing, check status.supabase.com for incidents, and consider recreating the Supabase project (current one may be stuck) -- re-run supabase/schema.sql in the new project either way.
-- **Blocked on:** Supabase's REST API (PostgREST) is returning `503 PGRST002 "Could not query the database for the schema cache"` for this project. Confirmed via a raw `curl` straight to `$SUPABASE_URL/rest/v1/...` (bypassing supabase-py entirely) -- same error, so it is NOT our code or credentials. The tables (document_chunks, products, chat_logs) do exist (visible in Table Editor), schema.sql ran with no errors, project shows "Active," and a full project restart did not fix it. This looks like a server-side infra issue on Supabase's end for this specific project.
-- **Gemini key:** added to `.env`, but not yet actually verified with a real call -- `scripts/verify_setup.py` checks Supabase first and never reached the Gemini check. Verify that too once Supabase is unblocked.
-- **GitHub remote:** connected and pushed -- https://github.com/LizetCh/rag-customer-support-agent
-- **Last session:** 2026-10-26
+- **Active Historia:** Historia 2 -- Agent with tools (Historia 1 is fully done and checked off).
+- **Next concrete step:** Start Historia 2 / Task 1 by explaining agents, tool calling, and a LangGraph state graph in plain language, *then* build the graph with three tools: `search_knowledge` (wraps `app/rag/search.py`), `check_stock` (needs the `products` table seeded first -- no seed script exists yet), and `handoff_to_human`. DoD: on 3 test questions, one per tool, the agent picks the right tool each time.
+- **Blocked on:** nothing.
+- **Setup notes:** `.env` must exist on each laptop (gitignored; copy from `.env.example` and fill it in). Supabase's Data API must be enabled (Project Settings -> Data API) -- it had been switched off, which caused the earlier `503 PGRST002`. `scripts/verify_setup.py` checks Supabase and Gemini.
+- **GitHub remote:** connected -- https://github.com/LizetCh/rag-customer-support-agent
+- **Last session:** 2026-10-26 (second session, on the Mac)
 
 ## Session log (most recent first)
+
+### 2026-10-26 (second session, Mac) -- Historia 1 complete
+- Created `.env` on the Mac. Fixed a `401 Invalid API key` (the wrong value had been pasted as `SUPABASE_SERVICE_ROLE_KEY`).
+- Found the real cause of the earlier `503 PGRST002`: the Supabase Data API had been switched off. Turned it on; `verify_setup.py` now passes for Supabase and Gemini.
+- Enabled RLS on all 3 tables (appended to `supabase/schema.sql` and run in the SQL editor). No policies, so the `anon` key has no access; the server's `service_role` key bypasses RLS.
+- Wrote 6 fictitious "Hearth & Crumb Bakery" docs under `docs/`, one topic per file so each eval question maps to one source document. Stock is deliberately *not* in the docs (that is `check_stock`'s job).
+- Built ingestion: `app/rag/chunking.py` (split at `## ` headings, prefix each chunk with "<title> > <section>"), `app/rag/embeddings.py`, `app/db/client.py`, `scripts/ingest.py` (idempotent: deletes a doc's old chunks before inserting). 38 chunks ingested, 768-dim vectors confirmed.
+- Built `app/rag/search.py` (`search(question, k=3)`, runnable via `python -m app.rag.search "..."`). No similarity threshold yet: good matches score about 0.68 and irrelevant ones about 0.60, so the cutoff will come from eval data in Historia 3.
+- Idea for Historia 3 / README: compare recall@3 for structure-aware vs fixed-size chunking.
+- Explained: schema cache, RLS, chunking strategies, embeddings, embedding spaces (vectors from different models are incompatible), top-k and hallucination risk, RPC. All added to GLOSSARY.md.
 
 ### 2026-10-26 -- Environment setup
 - Wrote CLAUDE.md (project brief, tech stack, architecture, roadmap, working agreement, session start/end protocol) and this PROGRESS.md.

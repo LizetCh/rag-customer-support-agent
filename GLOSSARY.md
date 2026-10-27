@@ -43,3 +43,5 @@ Plain-language definitions of terms as they come up while building this project.
 **Top-k search** -- return the k chunks with the highest similarity to the question (we use k = 3). It always returns k results, even when none of them answers the question.
 
 **Hallucination** -- when an LLM states something confidently that is not supported by its context or by fact. In RAG, a common cause is handing the model irrelevant chunks that it then tries to turn into an answer. Mitigated by a prompt that requires answering only from context, and optionally a similarity threshold.
+
+**RPC (Remote Procedure Call)** -- calling a function that runs on another machine as if it were a local function. In Supabase, `client.rpc("match_documents", {...})` sends an HTTP request to the Data API, which runs the SQL function `match_documents` (defined in `supabase/schema.sql`) inside Postgres and returns its rows. The similarity search happens in the database, next to the vectors and their index, so only the top 3 rows travel back instead of every embedding.
