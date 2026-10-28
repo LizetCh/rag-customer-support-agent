@@ -1,0 +1,28 @@
+{"question": "Can I pay with Apple Pay?", "expected_source": "faq.md", "expected_tool": "search_knowledge"}
+{"question": "Do you sell gift cards I could give to a friend?", "expected_source": "faq.md", "expected_tool": "search_knowledge"}
+{"question": "Are you open on Sundays?", "expected_source": "hours-and-location.md", "expected_tool": "search_knowledge"}
+{"question": "Is there parking near the bakery?", "expected_source": "hours-and-location.md", "expected_tool": "search_knowledge"}
+{"question": "Can you ship bread to Texas?", "expected_source": "shipping.md", "expected_tool": "search_knowledge"}
+{"question": "How much does shipping cost?", "expected_source": "shipping.md", "expected_tool": "search_knowledge"}
+{"question": "Can I return a loaf I didn't like?", "expected_source": "returns-and-refunds.md", "expected_tool": "search_knowledge"}
+{"question": "How long does a refund take to show up on my card?", "expected_source": "returns-and-refunds.md", "expected_tool": "search_knowledge"}
+{"question": "Is your kitchen nut-free?", "expected_source": "allergens.md", "expected_tool": "search_knowledge"}
+{"question": "Do you have any vegan options?", "expected_source": "allergens.md", "expected_tool": "search_knowledge"}
+{"question": "How far in advance do I need to order a birthday cake?", "expected_source": "custom-orders.md", "expected_tool": "search_knowledge"}
+{"question": "Is there a deposit for custom cakes?", "expected_source": "custom-orders.md", "expected_tool": "search_knowledge"}
+{"question": "Do you have any baguettes left?", "expected_source": null, "expected_tool": "check_stock"}
+{"question": "How much is the seeded rye?", "expected_source": null, "expected_tool": "check_stock"}
+{"question": "Are cinnamon rolls available right now?", "expected_source": null, "expected_tool": "check_stock"}
+{"question": "Does the butter croissant contain eggs?", "expected_source": null, "expected_tool": "check_stock"}
+{"question": "Can I speak to a real person, please?", "expected_source": null, "expected_tool": "handoff_to_human"}
+{"question": "My order #4821 never arrived.", "expected_source": null, "expected_tool": "handoff_to_human"}
+{"question": "My order arrived crushed.", "expected_source": null, "expected_tool": "handoff_to_human"}
+{"question": "I was charged twice for my order yesterday.", "expected_source": null, "expected_tool": "handoff_to_human"}
+{"question": "Can my mom in Austin get one of your loaves mailed to her?", "expected_source": "shipping.md", "expected_tool": null}
+{"question": "I live in Honolulu, can you send me some cookies?", "expected_source": "shipping.md", "expected_tool": null}
+{"question": "If I order online on a Friday, when does my package leave?", "expected_source": "shipping.md", "expected_tool": null}
+{"question": "Is your buckwheat bread safe for someone with celiac disease?", "expected_source": "allergens.md", "expected_tool": null}
+{"question": "What time do you close on Christmas Eve?", "expected_source": "hours-and-location.md", "expected_tool": null}
+{"question": "I need to cancel my daughter's birthday cake. Do I get my money back?", "expected_source": "custom-orders.md", "expected_tool": null}
+{"question": "The sourdough I bought this morning is raw in the middle.", "expected_source": "returns-and-refunds.md", "expected_tool": null}
+{"question": "Do I earn points when I buy bread?", "expected_source": "faq.md", "expected_tool": null}

@@ -4,8 +4,9 @@ Read this file first, every session, on either laptop. It is more precise than C
 
 ## Current status
 
-- **Active Historia:** Historia 2 -- Agent with tools. Both tasks done and checked off; Historia 2 is complete.
-- **Next concrete step:** Historia 3 / Task 1: 20-question eval set (expected source document + expected tool per question) and a script printing retrieval recall@3 and tool-choice accuracy. Explain the concepts first.
+- **Active Historia:** Historia 3 -- Evaluation & cost. Task 1 (eval set + scoring script) is written but NOT checked off: tool-choice accuracy has not run yet.
+- **Next concrete step:** run `uv run python -m evals.run_evals` (full, ~5 min) once the Gemini free-tier daily chat quota resets, and record both metrics. If the user confirms, check off Task 1. Then add recall@1 to `score_retrieval` (recall@3 is saturated at 20/20 with only 6 docs). Pending user decision: enable Gemini billing (recommended, needed for the Historia 4 deploy anyway) vs. staying on the free tier.
+- **Free-tier limits hit on 2026-10-28:** chat = 5 requests/min and 20/day (one full tool-choice run uses all 20); embeddings also return 429 after a few quick back-to-back eval runs. The configured `gemini-3.5-flash` is billed as `gemini-3.6-flash` (alias redirect), so pin an exact model version for reproducible evals.
 - **Ideas parked for Historia 3 evals:** (1) compare recall@3 for dense-only vs hybrid search (pgvector + Postgres full-text, fused with RRF); (2) compare structure-aware vs fixed-size chunking; (3) include ambiguous tool-choice cases such as "My order arrived crushed" with no request for a person (`search_knowledge` vs `handoff_to_human`); (4) log tool arguments, e.g. to confirm what Gemini passes to `check_stock` for "croissants". (5) allergen questions about a product can go to either `search_knowledge` or `check_stock` (the products table has an `allergens` column); "Do they contain gluten?" after a croissant stock question picked `search_knowledge`. Decide which tool is "expected" for these.
 - **Blocked on:** nothing.
 - **Setup notes:** `.env` must exist on each laptop (gitignored; copy from `.env.example` and fill it in). Supabase's Data API must be enabled (Project Settings -> Data API) -- it had been switched off, which caused the earlier `503 PGRST002`. `scripts/verify_setup.py` checks Supabase and Gemini.
@@ -13,6 +14,13 @@ Read this file first, every session, on either laptop. It is more precise than C
 - **Last session:** 2026-10-28 (Mac)
 
 ## Session log (most recent first)
+
+### 2026-10-28 (later) -- Historia 3 started
+- `evals/dataset.jsonl`: 20 core questions (12 `search_knowledge` across the 6 docs, 4 `check_stock`, 4 `handoff_to_human`) plus 8 harder retrieval-only paraphrases (`expected_tool: null`, left out of tool scoring to fit the daily quota).
+- Allergen rule decided: a question about a specific product's allergens expects `check_stock`; a general allergen policy question expects `search_knowledge`.
+- `evals/run_evals.py`: deterministic scoring (no LLM judge). Retrieval calls `search()` directly; tool choice calls the agent node once and reads its first `tool_calls`, without running the full graph. `--retrieval-only` flag skips the chat half.
+- Real result: retrieval recall@3 = 20/20 (100%), even on paraphrases. The metric is saturated because there are only 6 documents and 3 slots, so the next step is recall@1.
+- Explained: eval sets, recall@k vs MRR, tool-choice accuracy, deterministic eval vs LLM-as-judge, why not evaluate with a different model (DeepSeek/Qwen), and data-jurisdiction concerns. Glossary updated.
 
 ### 2026-10-28 -- Historia 2 complete
 - Built POST /chat: `app/api/schemas.py` (`ChatRequest`: message 1-2000 chars, optional UUID `session_id`; `ChatResponse`: `session_id`, `reply`, `tools_used`, `escalated`) and `app/api/chat.py` (router wrapping `build_graph()`). The server creates the session id on the first message.

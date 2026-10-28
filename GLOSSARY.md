@@ -69,3 +69,13 @@ Plain-language definitions of terms as they come up while building this project.
 **Session id** -- an identifier that ties separate HTTP requests together into one conversation. Ours is a random UUID created by the server on the first message and sent back by the client afterwards. Server-generated random ids cannot be guessed, so one customer cannot write into another customer's conversation.
 
 **Checkpointer** -- LangGraph's way to save a graph's state between runs, keyed by a `thread_id` (our session id). On each new message it loads the saved conversation, so the agent remembers earlier turns. We use `InMemorySaver` locally; it loses everything on restart, so a database-backed one is needed in production.
+
+**Eval set** -- a fixed list of test questions, each with its correct answer written by hand (here: the expected source document and the expected tool). Re-running it after every change shows, with numbers, whether the change made the system better or worse.
+
+**Recall@k** -- the share of questions where the correct item appears anywhere in the top k results. Ours is recall@3: did `search()` return at least one chunk from the expected document among its 3 results? Position inside the top 3 does not matter, because the agent receives all 3 chunks.
+
+**Tool-choice accuracy** -- the share of questions where the agent's first tool call matches the expected tool. It measures routing (deciding what to do), separately from retrieval (finding the right text), so a failure points at the part that needs fixing.
+
+**Deterministic eval vs LLM-as-judge** -- a deterministic eval grades by plain comparison against a known answer, so it is free, repeatable, and has no grader bias. LLM-as-judge uses a second model to grade open-ended output (for example, "is this reply faithful to the documents?"). It is useful when no exact answer exists, but it costs tokens and the judge itself can be wrong.
+
+**Rate limit / quota** -- the maximum number of API requests a provider allows per minute or per day. Gemini's free tier allows 5 chat requests per minute and 20 per day, which is why the eval script waits between calls.
