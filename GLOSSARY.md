@@ -63,3 +63,9 @@ Plain-language definitions of terms as they come up while building this project.
 **BM25** -- the standard keyword-ranking formula. It scores a chunk higher when it contains the query's words, giving extra weight to rare words and less to words repeated many times. Postgres offers similar built-in full-text search (`tsvector`).
 
 **RRF (Reciprocal Rank Fusion)** -- a way to merge two ranked lists. Each item scores `1 / (60 + rank)` in every list it appears in, and the scores are added. It uses only positions, not raw scores, which matters because cosine similarity and BM25 scores are on different scales and cannot be compared directly.
+
+**Pydantic schema** -- a Python class that declares the exact shape of data, such as `ChatRequest` (a message of 1 to 2000 characters, an optional UUID session id). FastAPI checks every request against it and rejects bad input with a `422 Unprocessable Entity` before any of our code runs. The same classes generate the Swagger documentation.
+
+**Session id** -- an identifier that ties separate HTTP requests together into one conversation. Ours is a random UUID created by the server on the first message and sent back by the client afterwards. Server-generated random ids cannot be guessed, so one customer cannot write into another customer's conversation.
+
+**Checkpointer** -- LangGraph's way to save a graph's state between runs, keyed by a `thread_id` (our session id). On each new message it loads the saved conversation, so the agent remembers earlier turns. We use `InMemorySaver` locally; it loses everything on restart, so a database-backed one is needed in production.

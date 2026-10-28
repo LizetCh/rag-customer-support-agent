@@ -48,14 +48,14 @@ def after_tools(state: MessagesState) -> str:
     return END if state["messages"][-1].name == handoff_to_human.name else "agent"
 
 
-def build_graph():
+def build_graph(checkpointer=None):
     graph = StateGraph(MessagesState)
     graph.add_node("agent", agent)
     graph.add_node("tools", ToolNode(TOOLS))
     graph.add_edge(START, "agent")
     graph.add_conditional_edges("agent", tools_condition)  # -> "tools" or END
     graph.add_conditional_edges("tools", after_tools, ["agent", END])
-    return graph.compile()
+    return graph.compile(checkpointer=checkpointer)
 
 
 if __name__ == "__main__":

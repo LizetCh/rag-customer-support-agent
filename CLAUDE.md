@@ -84,7 +84,7 @@ Check an item only after the user has confirmed, by actually running it, that it
 
 **Historia 2 -- Agent with tools (~4h)**
 - [x] LangGraph graph with three tools: search_knowledge, check_stock, handoff_to_human. DoD: on 3 test questions (one per tool), the agent picks the right tool each time.
-- [ ] POST /chat endpoint with Pydantic schemas and a session id. DoD: works end-to-end from the Swagger UI.
+- [x] POST /chat endpoint with Pydantic schemas and a session id. DoD: works end-to-end from the Swagger UI.
 
 **Historia 3 -- Evaluation & cost (~2.5h)**
 - [ ] 20-question eval set, each with an expected source document and an expected tool; a script scoring retrieval recall@3 and tool-choice accuracy. DoD: the script prints both metrics.

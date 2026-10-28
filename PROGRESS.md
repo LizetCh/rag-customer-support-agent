@@ -4,15 +4,21 @@ Read this file first, every session, on either laptop. It is more precise than C
 
 ## Current status
 
-- **Active Historia:** Historia 2 -- Agent with tools. Task 1 (LangGraph graph with three tools) is done and checked off.
-- **Next concrete step:** Historia 2 / Task 2: POST /chat endpoint with Pydantic request/response schemas and a session id, wrapping `build_graph()` from `app/agent/graph.py`. Explain the concepts first. DoD: works end-to-end from the Swagger UI.
-- **Ideas parked for Historia 3 evals:** (1) compare recall@3 for dense-only vs hybrid search (pgvector + Postgres full-text, fused with RRF); (2) compare structure-aware vs fixed-size chunking; (3) include ambiguous tool-choice cases such as "My order arrived crushed" with no request for a person (`search_knowledge` vs `handoff_to_human`); (4) log tool arguments, e.g. to confirm what Gemini passes to `check_stock` for "croissants".
+- **Active Historia:** Historia 2 -- Agent with tools. Both tasks done and checked off; Historia 2 is complete.
+- **Next concrete step:** Historia 3 / Task 1: 20-question eval set (expected source document + expected tool per question) and a script printing retrieval recall@3 and tool-choice accuracy. Explain the concepts first.
+- **Ideas parked for Historia 3 evals:** (1) compare recall@3 for dense-only vs hybrid search (pgvector + Postgres full-text, fused with RRF); (2) compare structure-aware vs fixed-size chunking; (3) include ambiguous tool-choice cases such as "My order arrived crushed" with no request for a person (`search_knowledge` vs `handoff_to_human`); (4) log tool arguments, e.g. to confirm what Gemini passes to `check_stock` for "croissants". (5) allergen questions about a product can go to either `search_knowledge` or `check_stock` (the products table has an `allergens` column); "Do they contain gluten?" after a croissant stock question picked `search_knowledge`. Decide which tool is "expected" for these.
 - **Blocked on:** nothing.
 - **Setup notes:** `.env` must exist on each laptop (gitignored; copy from `.env.example` and fill it in). Supabase's Data API must be enabled (Project Settings -> Data API) -- it had been switched off, which caused the earlier `503 PGRST002`. `scripts/verify_setup.py` checks Supabase and Gemini.
 - **GitHub remote:** connected -- https://github.com/LizetCh/rag-customer-support-agent
-- **Last session:** 2026-10-26 (second session, on the Mac)
+- **Last session:** 2026-10-28 (Mac)
 
 ## Session log (most recent first)
+
+### 2026-10-28 -- Historia 2 complete
+- Built POST /chat: `app/api/schemas.py` (`ChatRequest`: message 1-2000 chars, optional UUID `session_id`; `ChatResponse`: `session_id`, `reply`, `tools_used`, `escalated`) and `app/api/chat.py` (router wrapping `build_graph()`). The server creates the session id on the first message.
+- Conversation memory via LangGraph's `InMemorySaver` checkpointer, keyed by `thread_id` = session id. Lost on restart and not shared across instances, so it must move to a Postgres checkpointer before deploy (Historia 4).
+- `tests/test_chat.py`: 3 validation tests (blank, oversized, non-UUID session id -> 422). 6 tests pass.
+- Verified in Swagger UI: one question per tool picked the right tool, and a follow-up ("Do they contain gluten?") with the same session id correctly resolved "they" to croissants.
 
 ### 2026-10-26 (second session, Mac) -- Historia 1 complete
 - Created `.env` on the Mac. Fixed a `401 Invalid API key` (the wrong value had been pasted as `SUPABASE_SERVICE_ROLE_KEY`).
