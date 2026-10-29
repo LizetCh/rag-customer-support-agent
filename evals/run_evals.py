@@ -10,6 +10,7 @@ import time
 from pathlib import Path
 
 from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_google_genai.chat_models import GoogleAPIError
 
 from app.agent.graph import SYSTEM_PROMPT, get_llm
 from app.rag.search import search
@@ -44,15 +45,25 @@ def score_tool_choice(cases: list[dict]) -> None:
     # Retrieval-only cases (expected_tool null) are left out to stay within
     # the free tier's daily chat quota.
     cases = [c for c in cases if c["expected_tool"]]
-    failures = []
+    failures, errors = [], []
     for case in cases:
-        tool = first_tool(case["question"])
-        time.sleep(SECONDS_BETWEEN_CALLS)
+        # A 5xx from Gemini is the provider's failure, not the agent's, so it
+        # is reported apart and left out of the score instead of aborting the
+        # run. Quota errors (429) are not caught: the run should stop there.
+        try:
+            tool = first_tool(case["question"])
+        except GoogleAPIError as e:
+            errors.append(f"  {case['question']} | {e.code} {e.status}")
+            continue
+        finally:
+            time.sleep(SECONDS_BETWEEN_CALLS)
         if tool != case["expected_tool"]:
             failures.append(f"  {case['question']} | expected {case['expected_tool']}, got {tool}")
-    hits = len(cases) - len(failures)
-    print(f"Tool-choice accuracy: {hits}/{len(cases)} = {hits / len(cases):.0%}")
-    print("\n".join(failures))
+    scored = len(cases) - len(errors)
+    hits = scored - len(failures)
+    accuracy = f"{hits / scored:.0%}" if scored else "n/a"
+    print(f"Tool-choice accuracy: {hits}/{scored} = {accuracy}  ({len(errors)} errors, not scored)")
+    print("\n".join(failures + errors))
 
 
 def main() -> None:
