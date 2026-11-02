@@ -10,6 +10,16 @@ A customer-support agent for a fictitious bakery, Hearth & Crumb. It answers que
 
 > The demo runs on Gemini's free tier and can run out of quota. If `/chat` returns a 503, please try again later.
 
+## Demo
+
+![Demo at 2x speed: a return policy question, a stock check, a follow-up question, and a handoff to a person](assets/demo.gif)
+
+Shown at 2x speed. [Watch it at real speed](assets/demo.mp4).
+
+| Answering from the documents | Follow-up and handoff |
+|---|---|
+| ![The agent answers a return policy question with a formatted list](assets/chat-return-policy.png) | ![The agent answers a gluten follow-up, then hands off a crushed order to a person](assets/chat-handoff.png) |
+
 ## How it works
 
 ```mermaid
