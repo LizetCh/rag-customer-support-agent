@@ -91,7 +91,7 @@ Check an item only after the user has confirmed, by actually running it, that it
 - [x] Log tokens, estimated cost, and latency per request. DoD: every /chat response is persisted with that data.
 
 **Historia 4 -- Deploy (~1.5h)**
-- [ ] Dockerfile, deploy on Render, README with a flow diagram and real eval numbers. DoD: public URL, README shows real metrics (not placeholders).
+- [x] Dockerfile, deploy on Render, README with a flow diagram and real eval numbers. DoD: public URL, README shows real metrics (not placeholders).
 
 **Historia 5 -- "What the RAG?" visualizer (optional, only after Historia 4 is deployed)**
 - [ ] A page that shows, for one question: a 2D projection (PCA or UMAP) of all chunk embeddings colored by source document, the question's point with lines to its top-3 chunks (hover shows chunk text and similarity), the agent's path through the graph node by node (via `graph.stream`), and the turn's tokens, cost, and latency. Must state that the 2D map distorts distances and the real ranking is cosine similarity in 768 dims. DoD: works on the public deploy for any question.

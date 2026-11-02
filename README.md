@@ -4,7 +4,7 @@ A customer-support agent for a fictitious bakery, Hearth & Crumb. It answers que
 
 **Live API:** https://rag-customer-support-agent-f85i.onrender.com/docs
 
-**Status:** deployed. `/health` and `/docs` are confirmed working on the public URL, and a full `/chat` turn is confirmed locally. A full `/chat` turn on the public URL is still to be confirmed, because the free-tier Gemini quota ran out during deploy testing.
+**Status:** deployed and working. A full `/chat` turn is confirmed on the public URL, with its metrics logged.
 
 > The demo runs on Gemini's free tier and can run out of quota. If `/chat` returns a 503, please try again later.
 

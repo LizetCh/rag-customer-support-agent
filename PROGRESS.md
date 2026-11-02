@@ -4,8 +4,8 @@ Read this file first, every session, on either laptop. It is more precise than C
 
 ## Current status
 
-- **Active Historia:** Historia 4 -- Deploy. Dockerfile and 503 handling are coded, tested, and pushed.
-- **Next concrete step:** deployed at https://rag-customer-support-agent-f85i.onrender.com; `/health` and `/docs` work. After the Gemini daily quota resets (about 08:00 UTC, midnight Pacific; the 2026-11-02 error said retry in 10h44m), send one real POST /chat to the public URL and confirm a `chat_logs` row appears. Do not run evals first: they use the same quota. Then update the README's Status line, which still says this /chat turn is unconfirmed, and add a demo video or screenshots. The rest of the README is written (real metrics, flow diagram, limitations). Check off Historia 4 after the user confirms. The user stays on the Gemini free tier.
+- **Active Historia:** Historia 4 -- Deploy is complete, at https://rag-customer-support-agent-f85i.onrender.com. A real /chat turn on the public URL returned a good reply and wrote a `chat_logs` row (2026-11-02, 21:35 UTC).
+- **Next concrete step:** add a demo video or screenshots to the README, since the free-tier demo can run out of quota. Historia 5 (the optional visualizer) is the only roadmap item left, and it starts only if the user wants it. The user stays on the Gemini free tier. The app now has its own AI Studio project, so other projects no longer share its quota.
 - **Model note:** `gemini-3.6-flash` ignores `temperature` ("uses fixed sampling defaults"), so `temperature=0` in `get_llm` has no effect and eval results can vary between runs.
 - **Free-tier limits hit on 2026-10-28:** chat = 5 requests/min and 20/day (one full tool-choice run uses all 20); embeddings also return 429 after a few quick back-to-back eval runs. The configured `gemini-3.5-flash` is billed as `gemini-3.6-flash` (alias redirect), so the chat model is now pinned to `gemini-3.6-flash` (default, `.env.example`, and the user's `.env`).
 - **Ideas parked for Historia 3 evals:** (1) compare recall@3 for dense-only vs hybrid search (pgvector + Postgres full-text, fused with RRF); (2) compare structure-aware vs fixed-size chunking; (3) include ambiguous tool-choice cases such as "My order arrived crushed" with no request for a person (`search_knowledge` vs `handoff_to_human`); (4) log tool arguments, e.g. to confirm what Gemini passes to `check_stock` for "croissants". (5) allergen questions about a product can go to either `search_knowledge` or `check_stock` (the products table has an `allergens` column); "Do they contain gluten?" after a croissant stock question picked `search_knowledge`. Decide which tool is "expected" for these.
@@ -15,6 +15,11 @@ Read this file first, every session, on either laptop. It is more precise than C
 - **Last session:** 2026-11-02 (Mac)
 
 ## Session log (most recent first)
+
+### 2026-11-02 (end) -- Historia 4 complete
+- The 429s on Render came from the daily quota (`GenerateRequestsPerDayPerProjectPerModel-FreeTier`, value 20). The user's API keys for other projects shared one AI Studio project, so this app moved to its own project.
+- Confirmed on the public URL by the user: one /chat turn, logged with `search_knowledge` twice, 2320 tokens in, 477 tokens out, $0.003529, 9556 ms.
+- README written with real metrics, a flow diagram, design decisions, and limitations.
 
 ### 2026-11-02 (later) -- Historia 4 started
 - `Dockerfile` and `.dockerignore`: Python 3.12 slim, dependencies installed from the lockfile before the code is copied, non-root user, no secrets in the image, `PORT` from the environment.
