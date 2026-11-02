@@ -5,6 +5,7 @@ from unittest.mock import MagicMock
 from uuid import uuid4
 
 from fastapi.testclient import TestClient
+from langchain_core.exceptions import ModelError
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 
 from app.api import chat as chat_module
@@ -88,3 +89,14 @@ def test_chat_logs_only_the_current_turn(monkeypatch) -> None:
     assert args[2] == []
     assert args[3] >= 0
     assert args[4] is False
+
+
+def test_chat_returns_503_without_details_when_gemini_fails(monkeypatch) -> None:
+    graph = MagicMock()
+    graph.invoke.side_effect = ModelError("secret internal detail")
+    monkeypatch.setattr(chat_module, "graph", graph)
+
+    response = TestClient(app).post("/chat", json={"message": "Any baguettes?"})
+
+    assert response.status_code == 503
+    assert "secret" not in response.text

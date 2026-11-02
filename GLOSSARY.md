@@ -89,3 +89,11 @@ Plain-language definitions of terms as they come up while building this project.
 **Latency** -- how long a request takes. Here it is wall-clock time around `graph.invoke`, in milliseconds, so it includes Gemini and tool time but not the later `chat_logs` insert.
 
 **PII (personally identifiable information)** -- data that can identify a person, such as a name, address, or order details. Customers can type it into a public chat, so `chat_logs` stores metrics only, not message text. Data never stored cannot leak.
+
+**Docker image / container** -- an image is a packaged snapshot of an app with its exact Python and dependencies; a container is that image running. The same image behaves the same on a laptop and on Render.
+
+**Docker layer caching** -- Docker builds an image step by step and reuses saved steps until one changes, then reruns that step and all later ones. Copying the lockfile and installing dependencies before copying the code means a code edit does not reinstall everything.
+
+**Checkpointer** -- the LangGraph component that saves a conversation's state per session, so follow-up questions have context. `InMemorySaver` keeps it in RAM (lost on restart). A Postgres checkpointer keeps it in a database, which would also store message text.
+
+**Non-root container** -- running the app as a limited user rather than the all-powerful root user, so an attacker who breaks into the app has less power inside the container.

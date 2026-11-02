@@ -4,8 +4,8 @@ Read this file first, every session, on either laptop. It is more precise than C
 
 ## Current status
 
-- **Active Historia:** Historia 3 -- Evaluation & cost is complete. Historia 4 -- Deploy is next and not started.
-- **Next concrete step:** start Historia 4 with the Dockerfile. Before deploy, resolve two known gaps: conversation memory is still `InMemorySaver` (must move to a Postgres checkpointer), and an uncaught Gemini 429 returns a 500 from /chat without logging the turn. Eval results for the README: recall@1 19/20, recall@3 20/20, tool-choice accuracy 20/20. The user stays on the Gemini free tier for now: 20 chat requests/day per model, so a full tool-choice run uses the whole day's quota.
+- **Active Historia:** Historia 4 -- Deploy. Dockerfile and 503 handling are coded, tested, and pushed.
+- **Next concrete step:** create the Render web service (runtime Docker, health check `/health`, env vars set in Render's dashboard). Test one real /chat turn in the container or on Render, since all container attempts so far hit Gemini's 429. Then finish the README: public URL, real eval numbers, flow diagram, the known limitations, and a demo video or screenshots, since the free-tier demo will often be out of quota. Eval results: recall@1 19/20, recall@3 20/20, tool-choice accuracy 20/20. The user stays on the Gemini free tier.
 - **Free-tier limits hit on 2026-10-28:** chat = 5 requests/min and 20/day (one full tool-choice run uses all 20); embeddings also return 429 after a few quick back-to-back eval runs. The configured `gemini-3.5-flash` is billed as `gemini-3.6-flash` (alias redirect), so the chat model is now pinned to `gemini-3.6-flash` (default, `.env.example`, and the user's `.env`).
 - **Ideas parked for Historia 3 evals:** (1) compare recall@3 for dense-only vs hybrid search (pgvector + Postgres full-text, fused with RRF); (2) compare structure-aware vs fixed-size chunking; (3) include ambiguous tool-choice cases such as "My order arrived crushed" with no request for a person (`search_knowledge` vs `handoff_to_human`); (4) log tool arguments, e.g. to confirm what Gemini passes to `check_stock` for "croissants". (5) allergen questions about a product can go to either `search_knowledge` or `check_stock` (the products table has an `allergens` column); "Do they contain gluten?" after a croissant stock question picked `search_knowledge`. Decide which tool is "expected" for these.
 - **Blocked on:** nothing.
@@ -14,6 +14,13 @@ Read this file first, every session, on either laptop. It is more precise than C
 - **Last session:** 2026-11-02 (Mac)
 
 ## Session log (most recent first)
+
+### 2026-11-02 (later) -- Historia 4 started
+- `Dockerfile` and `.dockerignore`: Python 3.12 slim, dependencies installed from the lockfile before the code is copied, non-root user, no secrets in the image, `PORT` from the environment.
+- Decision: /chat stays public with no API key and no app-level limit, so recruiters can try it. Gemini's free-tier quota is the cap (the exact behavior is unclear: one 429 said 20 per day, yet a later call succeeded). This is a deliberate, documented exception to "auth by default": tools only read data, the data is fictitious, and the free tier cannot run up a bill. Add auth or a cap before ever enabling billing.
+- Decision: keep `InMemorySaver` for the demo. A Postgres checkpointer would store message text in the database, undoing the no-PII decision. List it in the README as a known limitation and the production path.
+- Gemini failures now return a generic 503 and are logged. Seen working in the container on a real Gemini 429.
+- 13 tests pass.
 
 ### 2026-11-02 -- Historia 3 complete
 - First full eval run: tool-choice accuracy 20/20, recall@3 20/20. Added recall@1: 19/20.
