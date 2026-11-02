@@ -53,6 +53,10 @@
   .notice { border-color: var(--ember); }
   .tool { align-self: flex-start; margin-left: 6px; font-size: .78rem; color: var(--muted); }
   .tool::before { content: "\2022\00a0"; color: var(--ember); }
+  .bubble p, .bubble ul { margin: 0; }
+  .bubble p + p, .bubble p + ul, .bubble ul + p { margin-top: 8px; }
+  .bubble ul { padding-left: 20px; }
+  .bubble li + li { margin-top: 6px; }
   .dots::after { content: ""; animation: dots 1.2s steps(4) infinite; }
   @keyframes dots { 25% { content: "."; } 50% { content: ".."; } 75% { content: "..."; } }
   footer { padding: 12px 16px 10px; border-top: 1px solid var(--line); background: var(--flour); }
@@ -139,6 +143,32 @@
     return element;
   }
 
+  // Gemini sometimes replies with Markdown. Support only **bold** and bullet
+  // lines, built as DOM elements: still no HTML parsing, so still no XSS.
+  function appendInline(parent, text) {
+    text.split(/\*\*(.+?)\*\*/).forEach((part, index) => {
+      if (index % 2) parent.append(Object.assign(document.createElement("strong"), { textContent: part }));
+      else parent.append(part);
+    });
+  }
+
+  function addReply(text) {
+    const bubble = add("", "bubble bot");
+    let list = null;
+    for (const line of text.split("\n")) {
+      if (!line.trim()) continue;
+      const bullet = line.match(/^\s*[*-]\s+(.*)$/);
+      if (bullet) {
+        list ??= bubble.appendChild(document.createElement("ul"));
+        appendInline(list.appendChild(document.createElement("li")), bullet[1]);
+      } else {
+        list = null;
+        appendInline(bubble.appendChild(document.createElement("p")), line);
+      }
+    }
+    messages.scrollTop = messages.scrollHeight;
+  }
+
   function setBusy(busy) {
     buttons.forEach((button) => { button.disabled = busy; });
   }
@@ -163,7 +193,7 @@
       }
       const data = await response.json();
       sessionId = data.session_id;
-      add(data.reply, "bubble bot");
+      addReply(data.reply);
       // A turn can use the same tool twice; show its label once.
       new Set(data.tools_used).forEach((tool) => add(TOOL_LABELS[tool] ?? tool, "tool"));
     } catch {
