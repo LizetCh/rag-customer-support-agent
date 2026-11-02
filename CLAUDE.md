@@ -14,7 +14,7 @@ A customer-support agent for a fictitious small bakery. It answers customer ques
 |---|---|
 | API | FastAPI |
 | Agent orchestration | LangGraph |
-| LLM (chat + tool calling) | Gemini, `gemini-3.5-flash` |
+| LLM (chat + tool calling) | Gemini, `gemini-3.6-flash` |
 | Embeddings | Gemini, `gemini-embedding-001`, truncated to 768 dims |
 | Vector store + relational data | Supabase (Postgres) with the `pgvector` extension |
 | Containerization | Docker |
@@ -87,8 +87,8 @@ Check an item only after the user has confirmed, by actually running it, that it
 - [x] POST /chat endpoint with Pydantic schemas and a session id. DoD: works end-to-end from the Swagger UI.
 
 **Historia 3 -- Evaluation & cost (~2.5h)**
-- [ ] 20-question eval set, each with an expected source document and an expected tool; a script scoring retrieval recall@3 and tool-choice accuracy. DoD: the script prints both metrics.
-- [ ] Log tokens, estimated cost, and latency per request. DoD: every /chat response is persisted with that data.
+- [x] 20-question eval set, each with an expected source document and an expected tool; a script scoring retrieval recall@3 and tool-choice accuracy. DoD: the script prints both metrics.
+- [x] Log tokens, estimated cost, and latency per request. DoD: every /chat response is persisted with that data.
 
 **Historia 4 -- Deploy (~1.5h)**
 - [ ] Dockerfile, deploy on Render, README with a flow diagram and real eval numbers. DoD: public URL, README shows real metrics (not placeholders).
@@ -116,7 +116,7 @@ Defined in .env.example, copied locally to .env (gitignored, never shown to or r
 | Var | Purpose |
 |---|---|
 | GOOGLE_API_KEY | Gemini API key (Google AI Studio) -- chat + embeddings |
-| GEMINI_CHAT_MODEL | defaults to gemini-3.5-flash |
+| GEMINI_CHAT_MODEL | defaults to gemini-3.6-flash |
 | GEMINI_EMBEDDING_MODEL | defaults to gemini-embedding-001 |
 | GEMINI_EMBEDDING_DIM | defaults to 768 |
 | SUPABASE_URL | Supabase project URL |

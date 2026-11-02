@@ -31,12 +31,18 @@ def score_retrieval(cases: list[dict]) -> None:
     # Stock and handoff questions have no source document, so they only
     # count toward tool-choice accuracy.
     cases = [c for c in cases if c["expected_source"]]
-    failures = []
+    failures, misses_at_1 = [], []
     for case in cases:
         sources = [r["source_document"] for r in search(case["question"], k=3)]
+        result = f"  {case['question']} | expected {case['expected_source']}, got {sources}"
         if case["expected_source"] not in sources:
-            failures.append(f"  {case['question']} | expected {case['expected_source']}, got {sources}")
+            failures.append(result)
+        if case["expected_source"] not in sources[:1]:
+            misses_at_1.append(result)
     hits = len(cases) - len(failures)
+    hits_at_1 = len(cases) - len(misses_at_1)
+    print(f"Retrieval recall@1:   {hits_at_1}/{len(cases)} = {hits_at_1 / len(cases):.0%}")
+    print("\n".join(misses_at_1))
     print(f"Retrieval recall@3:   {hits}/{len(cases)} = {hits / len(cases):.0%}")
     print("\n".join(failures))
 

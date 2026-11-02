@@ -4,16 +4,22 @@ Read this file first, every session, on either laptop. It is more precise than C
 
 ## Current status
 
-- **Active Historia:** Historia 3 -- Evaluation & cost. Task 1 (eval set + scoring script) is written but NOT checked off: tool-choice accuracy has not run yet.
-- **Next concrete step:** run `uv run python -m evals.run_evals` (full, ~5 min) once the Gemini free-tier daily chat quota resets, and record both metrics. If the user confirms, check off Task 1. Then add recall@1 to `score_retrieval` (recall@3 is saturated at 20/20 with only 6 docs). Pending user decision: enable Gemini billing (recommended, needed for the Historia 4 deploy anyway) vs. staying on the free tier.
-- **Free-tier limits hit on 2026-10-28:** chat = 5 requests/min and 20/day (one full tool-choice run uses all 20); embeddings also return 429 after a few quick back-to-back eval runs. The configured `gemini-3.5-flash` is billed as `gemini-3.6-flash` (alias redirect), so pin an exact model version for reproducible evals.
+- **Active Historia:** Historia 3 -- Evaluation & cost is complete. Historia 4 -- Deploy is next and not started.
+- **Next concrete step:** start Historia 4 with the Dockerfile. Before deploy, resolve two known gaps: conversation memory is still `InMemorySaver` (must move to a Postgres checkpointer), and an uncaught Gemini 429 returns a 500 from /chat without logging the turn. Eval results for the README: recall@1 19/20, recall@3 20/20, tool-choice accuracy 20/20. The user stays on the Gemini free tier for now: 20 chat requests/day per model, so a full tool-choice run uses the whole day's quota.
+- **Free-tier limits hit on 2026-10-28:** chat = 5 requests/min and 20/day (one full tool-choice run uses all 20); embeddings also return 429 after a few quick back-to-back eval runs. The configured `gemini-3.5-flash` is billed as `gemini-3.6-flash` (alias redirect), so the chat model is now pinned to `gemini-3.6-flash` (default, `.env.example`, and the user's `.env`).
 - **Ideas parked for Historia 3 evals:** (1) compare recall@3 for dense-only vs hybrid search (pgvector + Postgres full-text, fused with RRF); (2) compare structure-aware vs fixed-size chunking; (3) include ambiguous tool-choice cases such as "My order arrived crushed" with no request for a person (`search_knowledge` vs `handoff_to_human`); (4) log tool arguments, e.g. to confirm what Gemini passes to `check_stock` for "croissants". (5) allergen questions about a product can go to either `search_knowledge` or `check_stock` (the products table has an `allergens` column); "Do they contain gluten?" after a croissant stock question picked `search_knowledge`. Decide which tool is "expected" for these.
 - **Blocked on:** nothing.
 - **Setup notes:** `.env` must exist on each laptop (gitignored; copy from `.env.example` and fill it in). Supabase's Data API must be enabled (Project Settings -> Data API) -- it had been switched off, which caused the earlier `503 PGRST002`. `scripts/verify_setup.py` checks Supabase and Gemini.
 - **GitHub remote:** connected -- https://github.com/LizetCh/rag-customer-support-agent
-- **Last session:** 2026-10-28 (Mac)
+- **Last session:** 2026-11-02 (Mac)
 
 ## Session log (most recent first)
+
+### 2026-11-02 -- Historia 3 complete
+- First full eval run: tool-choice accuracy 20/20, recall@3 20/20. Added recall@1: 19/20.
+- `app/telemetry/chat_log.py` sums tokens across a turn's Gemini calls, estimates cost ($0.75 input and $3.75 output per 1M tokens, doubling on 2027-01-01), and writes one `chat_logs` row. A failed insert is logged and the customer still gets a reply.
+- Decision: no message text in `chat_logs`, to avoid storing customer PII. The user dropped `user_message` and `agent_response` in Supabase; `supabase/schema.sql` matches.
+- Verified: 11 tests pass. The user ran POST /chat live, and `chat_logs` got a row with `search_knowledge`, 1272 tokens in, 212 tokens out, $0.001749, and 7488 ms. Task 2 checked off.
 
 ### 2026-10-28 (later) -- Historia 3 started
 - `evals/dataset.jsonl`: 20 core questions (12 `search_knowledge` across the 6 docs, 4 `check_stock`, 4 `handoff_to_human`) plus 8 harder retrieval-only paraphrases (`expected_tool: null`, left out of tool scoring to fit the daily quota).

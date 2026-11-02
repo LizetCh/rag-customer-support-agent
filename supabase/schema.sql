@@ -53,8 +53,6 @@ create table if not exists products (
 create table if not exists chat_logs (
   id bigint generated always as identity primary key,
   session_id text not null,
-  user_message text not null,
-  agent_response text not null,
   tool_used text,
   tokens_in int,
   tokens_out int,

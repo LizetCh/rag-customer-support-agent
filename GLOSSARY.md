@@ -79,3 +79,13 @@ Plain-language definitions of terms as they come up while building this project.
 **Deterministic eval vs LLM-as-judge** -- a deterministic eval grades by plain comparison against a known answer, so it is free, repeatable, and has no grader bias. LLM-as-judge uses a second model to grade open-ended output (for example, "is this reply faithful to the documents?"). It is useful when no exact answer exists, but it costs tokens and the judge itself can be wrong.
 
 **Rate limit / quota** -- the maximum number of API requests a provider allows per minute or per day. Gemini's free tier allows 5 chat requests per minute and 20 per day, which is why the eval script waits between calls.
+
+**Telemetry** -- data a running system records about its own behavior, such as tokens, cost, and latency per request. Without it, nobody can answer "how much does this cost?" or "how slow is it?" with real numbers. Here it goes to the `chat_logs` table, one row per `/chat` turn, without the message text.
+
+**Token usage (`usage_metadata`)** -- the input and output token counts Gemini reports for each call, which LangChain exposes on each `AIMessage`. A turn that uses a tool makes two billed calls, so the turn's total is the sum of both. Output tokens include thinking tokens.
+
+**Estimated cost** -- token counts multiplied by the provider's published per-million-token prices. It is an estimate because the free tier actually bills $0, and this calculation leaves out the embedding call and cache discounts.
+
+**Latency** -- how long a request takes. Here it is wall-clock time around `graph.invoke`, in milliseconds, so it includes Gemini and tool time but not the later `chat_logs` insert.
+
+**PII (personally identifiable information)** -- data that can identify a person, such as a name, address, or order details. Customers can type it into a public chat, so `chat_logs` stores metrics only, not message text. Data never stored cannot leak.
