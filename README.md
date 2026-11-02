@@ -2,7 +2,9 @@
 
 A customer-support agent for a fictitious bakery, Hearth & Crumb. It answers questions from the bakery's own documents, checks live inventory, and hands off to a human when it can't resolve something. I built it as a portfolio project covering retrieval-augmented generation, a tool-using agent, evaluation, cost and latency tracking, and a real deploy.
 
-**Live API:** https://rag-customer-support-agent-f85i.onrender.com/docs
+**Live demo:** https://rag-customer-support-agent-f85i.onrender.com
+
+**API docs:** https://rag-customer-support-agent-f85i.onrender.com/docs
 
 **Status:** deployed and working. A full `/chat` turn is confirmed on the public URL, with its metrics logged.
 
@@ -40,7 +42,7 @@ It's a loop, not a fixed pipeline: after each tool result, Gemini decides whethe
 
 ## Try it
 
-Open the [Swagger UI](https://rag-customer-support-agent-f85i.onrender.com/docs), or call the API directly:
+Open the [chat page](https://rag-customer-support-agent-f85i.onrender.com). A small label under each reply shows which tool the agent used. You can also use the [Swagger UI](https://rag-customer-support-agent-f85i.onrender.com/docs) or call the API directly:
 
 ```bash
 curl -X POST https://rag-customer-support-agent-f85i.onrender.com/chat \

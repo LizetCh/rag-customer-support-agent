@@ -62,6 +62,7 @@ bread-agent/
 |-- app/
 |   |-- main.py          # FastAPI app, currently just GET /health
 |   |-- config.py        # settings loaded from env vars (pydantic-settings)
+|   |-- static/          # chat.html, the demo chat page served at GET /
 |   |-- db/              # Supabase client + queries
 |   |-- rag/             # chunking, embedding, top-k search -- Historia 1
 |   |-- agent/           # LangGraph graph + tool definitions -- Historia 2

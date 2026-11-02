@@ -97,3 +97,5 @@ Plain-language definitions of terms as they come up while building this project.
 **Checkpointer** -- the LangGraph component that saves a conversation's state per session, so follow-up questions have context. `InMemorySaver` keeps it in RAM (lost on restart). A Postgres checkpointer keeps it in a database, which would also store message text.
 
 **Non-root container** -- running the app as a limited user rather than the all-powerful root user, so an attacker who breaks into the app has less power inside the container.
+
+**XSS (cross-site scripting)** -- an attack where text someone typed gets treated as code by the browser and runs on the page. The chat page prevents it by inserting all messages with `textContent`, which always shows them as plain text, and never with `innerHTML`.
