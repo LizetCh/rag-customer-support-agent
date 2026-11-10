@@ -136,3 +136,7 @@ docker run -p 8000:8000 --env-file .env rag-support-agent
 ```
 
 All bakery data in this project is fictitious.
+
+## License
+
+[MIT](LICENSE)
