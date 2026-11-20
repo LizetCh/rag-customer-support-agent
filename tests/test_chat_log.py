@@ -45,11 +45,12 @@ def test_log_turn_writes_metrics_without_message_text(monkeypatch) -> None:
     monkeypatch.setattr(chat_log, "get_client", lambda: client)
     session_id = uuid4()
 
-    chat_log.log_turn(session_id, [ai("secret reply", 1000, 100)], ["check_stock"], 1234, False)
+    chat_log.log_turn("req-1", session_id, [ai("secret reply", 1000, 100)], ["check_stock"], 1234, False)
 
     client.table.assert_called_once_with("chat_logs")
     client.table.return_value.insert.assert_called_once_with(
         {
+            "request_id": "req-1",
             "session_id": str(session_id),
             "tool_used": "check_stock",
             "tokens_in": 1000,
@@ -66,7 +67,7 @@ def test_log_turn_survives_a_database_failure(monkeypatch, caplog) -> None:
     client.table.side_effect = RuntimeError("database down")
     monkeypatch.setattr(chat_log, "get_client", lambda: client)
 
-    chat_log.log_turn(uuid4(), [], [], 1, False)
+    chat_log.log_turn("req-1", uuid4(), [], [], 1, False)
 
     assert "Failed to write chat_logs row" in caplog.text
 
@@ -84,11 +85,12 @@ def test_chat_logs_only_the_current_turn(monkeypatch) -> None:
 
     assert response.status_code == 200
     args = log_turn.call_args.args
-    assert str(args[0]) == response.json()["session_id"]
-    assert args[1] == current_turn
-    assert args[2] == []
-    assert args[3] >= 0
-    assert args[4] is False
+    assert args[0] == response.headers["X-Request-ID"]
+    assert str(args[1]) == response.json()["session_id"]
+    assert args[2] == current_turn
+    assert args[3] == []
+    assert args[4] >= 0
+    assert args[5] is False
 
 
 def test_chat_returns_503_without_details_when_gemini_fails(monkeypatch) -> None:

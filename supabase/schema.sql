@@ -52,6 +52,7 @@ create table if not exists products (
 -- Historia 3: per-request telemetry logged by /chat
 create table if not exists chat_logs (
   id bigint generated always as identity primary key,
+  request_id text,
   session_id text not null,
   tool_used text,
   tokens_in int,
@@ -67,3 +68,7 @@ create table if not exists chat_logs (
 alter table document_chunks enable row level security;
 alter table products        enable row level security;
 alter table chat_logs       enable row level security;
+
+-- 2026-11-20 migration for databases created before correlation IDs.
+-- Nullable, so older rows and older app versions keep working.
+alter table chat_logs add column if not exists request_id text;

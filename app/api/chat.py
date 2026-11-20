@@ -12,6 +12,7 @@ from app.agent.graph import build_graph
 from app.agent.tools import handoff_to_human
 from app.api.schemas import ChatRequest, ChatResponse
 from app.telemetry.chat_log import log_turn
+from app.telemetry.request_id import request_id_var
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +49,7 @@ def chat(request: ChatRequest) -> ChatResponse:
     tools_used = [m.name for m in turn_messages if m.type == "tool"]
     escalated = handoff_to_human.name in tools_used
 
-    log_turn(session_id, turn_messages, tools_used, latency_ms, escalated)
+    log_turn(request_id_var.get(), session_id, turn_messages, tools_used, latency_ms, escalated)
 
     return ChatResponse(
         session_id=session_id,

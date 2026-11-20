@@ -99,3 +99,11 @@ Plain-language definitions of terms as they come up while building this project.
 **Non-root container** -- running the app as a limited user rather than the all-powerful root user, so an attacker who breaks into the app has less power inside the container.
 
 **XSS (cross-site scripting)** -- an attack where text someone typed gets treated as code by the browser and runs on the page. The chat page prevents it by inserting all messages with `textContent`, which always shows them as plain text, and never with `innerHTML`.
+
+**Correlation ID (request ID)** -- a unique id given to one request and carried everywhere that request goes: every log line, the database row it writes, the response header (`X-Request-ID`), and any other service it calls. Searching for that one id shows everything that happened for that request and nothing else.
+
+**Middleware** -- code that wraps every request: it runs before the endpoint and again after it, without each endpoint having to call it. Here it assigns the correlation ID, adds it to the response, and logs one summary line per request.
+
+**ContextVar** -- a Python variable that holds a separate value for each request (each async task or thread it runs in), even when many requests run at the same time. Any function can read the current request's id without it being passed down as a parameter.
+
+**Log injection** -- an attack where untrusted text written to a log contains a newline or other control characters, so it forges fake log lines. The app accepts a client's `X-Request-ID` only if it is up to 64 letters, digits, `.`, `_`, or `-`, and otherwise generates its own.

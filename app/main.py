@@ -4,10 +4,14 @@ from fastapi import FastAPI
 from fastapi.responses import FileResponse
 
 from app.api.chat import router as chat_router
+from app.telemetry.request_id import configure_logging, request_id_middleware
 
 CHAT_PAGE = Path(__file__).parent / "static" / "chat.html"
 
+configure_logging()
+
 app = FastAPI(title="Bakery Support Agent")
+app.middleware("http")(request_id_middleware)
 app.include_router(chat_router)
 
 

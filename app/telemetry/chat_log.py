@@ -34,6 +34,7 @@ def estimate_cost(tokens_in: int, tokens_out: int) -> float:
 
 
 def log_turn(
+    request_id: str,
     session_id: UUID,
     turn_messages: Sequence[BaseMessage],
     tools_used: list[str],
@@ -46,6 +47,7 @@ def log_turn(
     try:
         get_client().table("chat_logs").insert(
             {
+                "request_id": request_id,
                 "session_id": str(session_id),
                 "tool_used": ", ".join(tools_used) or None,
                 "tokens_in": tokens_in,
