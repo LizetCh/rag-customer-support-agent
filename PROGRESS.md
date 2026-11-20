@@ -4,7 +4,7 @@ Read this file first, every session, on either laptop. It is more precise than C
 
 ## Current status
 
-- **Active Historia:** Historia 4 -- Deploy is complete, at https://rag-customer-support-agent-f85i.onrender.com. A real /chat turn on the public URL returned a good reply and wrote a `chat_logs` row (2026-11-02, 21:35 UTC).
+- **Active Historia:** Historia 5 -- Production hardening. Task 1 (correlation IDs) done; task 2 (SQLAlchemy + Alembic) not started. Historia 4 deploy lives at https://rag-customer-support-agent-f85i.onrender.com.
 - **Next concrete step:** start Historia 5 -- Production hardening (new, added 2026-11-20 after an interview exposed gaps in idempotency keys, correlation IDs, backpressure, eval tolerances, and handoff taxonomy). Order: correlation IDs (done), then SQLAlchemy + Alembic (next: explain the concepts and wait for the user before writing code) (decided 2026-11-20: replace `supabase-py` entirely, so later tables arrive as Alembic revisions), then idempotency keys, backpressure, handoff taxonomy, eval tolerances. The visualizer moved to Historia 6 (optional). Still open from Historia 4: check that the demo video plays from the README on GitHub.
 - **Model note:** `gemini-3.6-flash` ignores `temperature` ("uses fixed sampling defaults"), so `temperature=0` in `get_llm` has no effect and eval results can vary between runs.
 - **Free-tier limits hit on 2026-10-28:** chat = 5 requests/min and 20/day (one full tool-choice run uses all 20); embeddings also return 429 after a few quick back-to-back eval runs. The configured `gemini-3.5-flash` is billed as `gemini-3.6-flash` (alias redirect), so the chat model is now pinned to `gemini-3.6-flash` (default, `.env.example`, and the user's `.env`).
@@ -12,7 +12,7 @@ Read this file first, every session, on either laptop. It is more precise than C
 - **Blocked on:** nothing.
 - **Setup notes:** `.env` must exist on each laptop (gitignored; copy from `.env.example` and fill it in). Supabase's Data API must be enabled (Project Settings -> Data API) -- it had been switched off, which caused the earlier `503 PGRST002`. `scripts/verify_setup.py` checks Supabase and Gemini.
 - **GitHub remote:** connected -- https://github.com/LizetCh/rag-customer-support-agent
-- **Last session:** 2026-11-02 (Mac)
+- **Last session:** 2026-11-20 (Mac)
 
 ## Session log (most recent first)
 
