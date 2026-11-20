@@ -5,7 +5,7 @@ Read this file first, every session, on either laptop. It is more precise than C
 ## Current status
 
 - **Active Historia:** Historia 4 -- Deploy is complete, at https://rag-customer-support-agent-f85i.onrender.com. A real /chat turn on the public URL returned a good reply and wrote a `chat_logs` row (2026-11-02, 21:35 UTC).
-- **Next concrete step:** the chat page is live and the demo video and screenshots are in `assets/`, linked from the README. Check that the video plays from the README on GitHub. Historia 5 (the optional visualizer) is the only roadmap item left, and it starts only if the user wants it. The user stays on the Gemini free tier. The app now has its own AI Studio project, so other projects no longer share its quota.
+- **Next concrete step:** start Historia 5 -- Production hardening (new, added 2026-11-20 after an interview exposed gaps in idempotency keys, correlation IDs, backpressure, eval tolerances, and handoff taxonomy). Suggested order: correlation IDs first (every later item logs with it), then handoff taxonomy, idempotency keys, backpressure, eval tolerances. The visualizer moved to Historia 6 (optional). Still open from Historia 4: check that the demo video plays from the README on GitHub.
 - **Model note:** `gemini-3.6-flash` ignores `temperature` ("uses fixed sampling defaults"), so `temperature=0` in `get_llm` has no effect and eval results can vary between runs.
 - **Free-tier limits hit on 2026-10-28:** chat = 5 requests/min and 20/day (one full tool-choice run uses all 20); embeddings also return 429 after a few quick back-to-back eval runs. The configured `gemini-3.5-flash` is billed as `gemini-3.6-flash` (alias redirect), so the chat model is now pinned to `gemini-3.6-flash` (default, `.env.example`, and the user's `.env`).
 - **Ideas parked for Historia 3 evals:** (1) compare recall@3 for dense-only vs hybrid search (pgvector + Postgres full-text, fused with RRF); (2) compare structure-aware vs fixed-size chunking; (3) include ambiguous tool-choice cases such as "My order arrived crushed" with no request for a person (`search_knowledge` vs `handoff_to_human`); (4) log tool arguments, e.g. to confirm what Gemini passes to `check_stock` for "croissants". (5) allergen questions about a product can go to either `search_knowledge` or `check_stock` (the products table has an `allergens` column); "Do they contain gluten?" after a croissant stock question picked `search_knowledge`. Decide which tool is "expected" for these.
@@ -15,6 +15,9 @@ Read this file first, every session, on either laptop. It is more precise than C
 - **Last session:** 2026-11-02 (Mac)
 
 ## Session log (most recent first)
+
+### 2026-11-20 -- Historia 5 planned
+- Added Historia 5 (production hardening) to the CLAUDE.md roadmap, each item with its own DoD. Renumbered the visualizer to Historia 6.
 
 ### 2026-11-02 (end) -- Historia 4 complete
 - The 429s on Render came from the daily quota (`GenerateRequestsPerDayPerProjectPerModel-FreeTier`, value 20). The user's API keys for other projects shared one AI Studio project, so this app moved to its own project.
